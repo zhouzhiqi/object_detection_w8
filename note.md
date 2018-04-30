@@ -1,4 +1,6 @@
 ## 指定目录
+python ./object_detection/train.py --train_dir=data/zhouzhiqi/quiz-w8-data/train --pipeline_config_path=ssd_mobilenet_v1_pets.config 
+
 当前文件夹下
 正确: --dataset_dir=data/quiz-w8-data
 错误: --dataset_dir=/data/quiz-w8-data
