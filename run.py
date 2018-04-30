@@ -1,5 +1,8 @@
 import os
 
+print('current working dir [{0}]'.format(os.getcwd()))
+w_d = os.path.dirname(os.path.abspath(__file__))
+
 def show_dir(path):
     for i in os.listdir(path):
         if os.path.isdir(i):
@@ -10,8 +13,6 @@ def show_dir(path):
             
 show_dir(w_d)
 
-print('current working dir [{0}]'.format(os.getcwd()))
-w_d = os.path.dirname(os.path.abspath(__file__))
 print('change wording dir to [{0}]'.format(w_d))
 os.chdir(w_d)
 
