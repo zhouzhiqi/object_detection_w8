@@ -1,15 +1,16 @@
 ## 指定目录
 python ./object_detection/train.py --train_dir=data/zhouzhiqi/quiz-w8-data/train --pipeline_config_path=ssd_mobilenet_v1_pets.config 
 
+
 当前文件夹下
 正确: --dataset_dir=data/quiz-w8-data
 错误: --dataset_dir=/data/quiz-w8-data
 
 ## 运行
 ## A
->代码: python ./object_detection/eval.py
->异常: ImportError: No module named 'pycocotools'
->解决方法: 
+代码: python ./object_detection/eval.py
+异常: ImportError: No module named 'pycocotools'
+解决方法: 
 Microsoft COCO 是 一个标注过的图片数据集，可用以目标检测、分割和描述生成等. 
 Pycocotools 是 python api tools of coco...
 获取源码
@@ -26,9 +27,9 @@ python setup.py build_ext --inplace
 python setup.py build_ext install
 ```
 ## B
->代码: python ./object_detection/train.py
->异常: TypeError: `pred` must be a Tensor, a Variable, or a Python bool.
->解决方法:
+代码: python ./object_detection/train.py
+异常: TypeError: `pred` must be a Tensor, a Variable, or a Python bool.
+解决方法:
 搜素并打开 ssd_mobilenet_v1_feature_extractor.py
 定位到 107到109行, 把 is_training=None改成 is_training=True即可 ，如下
 with slim.arg_scope(
@@ -36,10 +37,58 @@ mobilenet_v1.mobilenet_v1_arg_scope(
 is_training=True, regularize_depthwise=True)):
 tf1.4对None的支持不友好
 
+## BB
+代码: python ./object_detection/train.py
+异常: ValueError: axis = 0 not in [0, 0)
+解决方法:
+```
+loss {
+classification_loss {
+weighted_sigmoid {
+}
+}
+localization_loss {
+weighted_smooth_l1 {
+}
+}
+hard_example_miner {
+num_hard_examples: 3000
+iou_threshold: 0.99
+loss_type: CLASSIFICATION
+max_negatives_per_positive: 3
+min_negatives_per_image: 0
+}
+classification_weight: 1.0
+localization_weight: 1.0
+}
+to
+
+loss {
+classification_loss {
+weighted_sigmoid {
+anchorwise_output: true #add this
+}
+}
+localization_loss {
+weighted_smooth_l1 {
+anchorwise_output: true #add this
+}
+}
+hard_example_miner {
+num_hard_examples: 3000
+iou_threshold: 0.99
+loss_type: CLASSIFICATION
+max_negatives_per_positive: 3
+min_negatives_per_image: 0
+}
+classification_weight: 1.0
+localization_weight: 1.0
+}
+```
 ## C
->代码: 
->异常: 'tensorflow.contrib.data' has no attribute 'parallel_interleave'
->解决方法:
+代码: 
+异常: 'tensorflow.contrib.data' has no attribute 'parallel_interleave'
+解决方法:
 搜素并打开 dataset_util.py
 定位到 132到135行, 把tf.contrib.data.parallel_interleave
 改为tf.contrib.data.sloppy_interleave, 并删除sloppy=True, 如下
